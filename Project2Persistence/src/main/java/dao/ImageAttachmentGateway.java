@@ -5,7 +5,7 @@ import model.Image;
 import java.sql.*;
 
 public class ImageAttachmentGateway {
-
+    //return image id after image is created. return -1 means creat fail
     public int createAttachment(Image image) {
 
         Connection connection = DBConnection.getConnection();
@@ -44,7 +44,7 @@ public class ImageAttachmentGateway {
             }
         }
     }
-
+    //return true when success delete
     public boolean deleteAttachment(int imageID) {
         Connection connection = DBConnection.getConnection();
         try {
@@ -69,7 +69,7 @@ public class ImageAttachmentGateway {
         }
 
     }
-
+    //return an image obj
     public Image getAttachment(int ImageID, int AlbumID) {
 
         Connection connection = DBConnection.getConnection();
