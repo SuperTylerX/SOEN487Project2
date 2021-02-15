@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class Image {
     private byte[] content;
     private String mime;
+    private int id;
 
     public Image(byte[] content, String mime) {
         this.content = content;
@@ -29,6 +30,14 @@ public class Image {
 
     public void setMime(String mime) {
         this.mime = mime;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

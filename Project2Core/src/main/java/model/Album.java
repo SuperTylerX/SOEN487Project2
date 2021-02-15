@@ -2,6 +2,7 @@ package model;
 
 public class Album {
 
+    private int albumID;
     private String ISRC;
     private String title;
     private String description;
@@ -70,6 +71,14 @@ public class Album {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public int getAlbumID() {
+        return albumID;
+    }
+
+    public void setAlbumID(int albumID) {
+        this.albumID = albumID;
     }
 
     @Override
