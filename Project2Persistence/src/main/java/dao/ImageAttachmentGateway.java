@@ -1,5 +1,6 @@
 package dao;
 
+import model.Album;
 import model.Image;
 
 import java.sql.*;
@@ -128,5 +129,33 @@ public class ImageAttachmentGateway {
             }
         }
     }
+
+    //update image by ID
+    public boolean updateImage(Image image,  int imageID) {
+
+        Connection connection = DBConnection.getConnection();
+
+        try {
+            PreparedStatement ps;
+            ps = connection.prepareStatement("UPDATE images SET image_content=?,image_mime=? WHERE image_id=?");
+
+            ps.setBytes(1, image.getContent());
+            ps.setString(2, image.getMime());
+            ps.setInt(3,imageID);
+
+            int i = ps.executeUpdate();
+            if (i == 1) {
+                log.createLog("UPDATE", "UPDATE: update image: " + image.printImg() + " success");
+                return true;
+            }
+        } catch (Exception e) {
+            log.createLog("UPDATE", "UPDATE: update image: " + image.printImg() + " FAILED");
+            e.printStackTrace();
+            return false;
+        }
+        log.createLog("UPDATE", "UPDATE: update image: " + image.printImg() + " FAILED, no image has this ID");
+        return false;
+    }
+
 
 }

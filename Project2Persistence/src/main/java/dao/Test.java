@@ -37,7 +37,8 @@ public class Test {
 //        img.createAttachment(i);
 //        Image i2=img.getAttachment(1,3);
 //        System.out.println(i2);
-        img.deleteAttachment(3);
+//        img.deleteAttachment(3);
+        img.updateImage(i,2);
 
 
     }
