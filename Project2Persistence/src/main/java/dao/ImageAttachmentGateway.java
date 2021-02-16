@@ -5,6 +5,9 @@ import model.Image;
 import java.sql.*;
 
 public class ImageAttachmentGateway {
+    //for log
+    LogGateway log = new LogGateway();
+
     //return image id after image is created. return -1 means creat fail
     public int createAttachment(Image image) {
 
@@ -15,25 +18,27 @@ public class ImageAttachmentGateway {
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, image.getMime());
-
-            Blob blob = connection.createBlob();
-            blob.setBytes(1, image.getContent());
-            ps.setBlob(2, blob);
+            ps.setBytes(2, image.getContent());
 
             int i = ps.executeUpdate();
 
             // get the attachID
             if (i == 1) {
+                log.createLog("CREATE", "create image Attachment " + image.printImg() + " success");
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         image.setId(generatedKeys.getInt(1));
                     }
                 }
             } else {
+                log.createLog("CREATE", "create image Attachment " + image.printImg() + " FAILED");
+
                 return -1;
             }
             return image.getId();
         } catch (SQLException ex) {
+            log.createLog("CREATE", "create image Attachment " + image.printImg() + " FAILED");
+
             ex.printStackTrace();
             return -1;
         } finally {
@@ -44,6 +49,7 @@ public class ImageAttachmentGateway {
             }
         }
     }
+
     //return true when success delete
     public boolean deleteAttachment(int imageID) {
         Connection connection = DBConnection.getConnection();
@@ -54,10 +60,18 @@ public class ImageAttachmentGateway {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, imageID);
                 int i = ps.executeUpdate();
+                if (i == 1) {
+                    log.createLog("DELETE", "delete image Attachment with id " + imageID + " success");
+                } else {
+                    log.createLog("DELETE", "delete image Attachment with id " + imageID + " success, no image has this ID");
+
+                }
                 return i == 1;
             }
             return false;
         } catch (SQLException ex) {
+            log.createLog("DELETE", "delete image Attachment with id " + imageID + " FAILED");
+
             ex.printStackTrace();
             return false;
         } finally {
@@ -69,6 +83,7 @@ public class ImageAttachmentGateway {
         }
 
     }
+
     //return an image obj
     public Image getAttachment(int ImageID, int AlbumID) {
 
@@ -88,13 +103,21 @@ public class ImageAttachmentGateway {
                 image.setMime(rs.getString("image_mime"));
                 image.setId(rs.getInt("image_id"));
                 image.setContent(rs.getBytes("image_content"));
+                connection.close();
+                log.createLog("GET", "Get image Attachment with imageID " + ImageID + " and albumID: " + AlbumID + " SUCCESS");
 
                 return image;
             } else {
+                connection.close();
+                log.createLog("GET", "Get image Attachment with imageID " + ImageID + " and albumID: " + AlbumID + " SUCCESS, no such image");
+
                 return null;
             }
 
         } catch (SQLException e) {
+
+            log.createLog("GET", "Get image Attachment with imageID " + ImageID + " and albumID: " + AlbumID + " FAILED");
+
             e.printStackTrace();
             return null;
         } finally {

@@ -8,6 +8,7 @@ public class Album {
     private String description;
     private int year;
     private String artist;
+    private Image img;
 
     public Album(String ISRC, String title, String description, int year, String artist) {
         this.ISRC = ISRC;
@@ -81,14 +82,24 @@ public class Album {
         this.albumID = albumID;
     }
 
+    public Image getImg() {
+        return img;
+    }
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
+
     @Override
     public String toString() {
         return "Album{" +
-                "ISRC='" + ISRC + '\'' +
+                "albumID=" + albumID +
+                ", ISRC='" + ISRC + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", year=" + year +
                 ", artist='" + artist + '\'' +
+                ", img=" + img +
                 '}';
     }
 

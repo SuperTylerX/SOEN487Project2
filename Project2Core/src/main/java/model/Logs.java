@@ -1,33 +1,27 @@
 package model;
 
 public class Logs {
-    private String log_id;
+
+    private int log_id;
     private String log_type;
-    private String log_date;
+    private long log_date;
+    private String log_content;
 
     public Logs() {
     }
 
-    public Logs(String log_id, String log_type, String log_date) {
+    public Logs(int log_id, String log_type, long log_date, String log_content) {
         this.log_id = log_id;
         this.log_type = log_type;
         this.log_date = log_date;
+        this.log_content = log_content;
     }
 
-    @Override
-    public String toString() {
-        return "Logs{" +
-                "log_id='" + log_id + '\'' +
-                ", log_type='" + log_type + '\'' +
-                ", log_date='" + log_date + '\'' +
-                '}';
-    }
-
-    public String getLog_id() {
+    public int getLog_id() {
         return log_id;
     }
 
-    public void setLog_id(String log_id) {
+    public void setLog_id(int log_id) {
         this.log_id = log_id;
     }
 
@@ -39,13 +33,27 @@ public class Logs {
         this.log_type = log_type;
     }
 
-    public String getLog_date() {
+    public long getLog_date() {
         return log_date;
     }
 
-    public void setLog_date(String log_date) {
+    public void setLog_date(long log_date) {
         this.log_date = log_date;
     }
 
+    public String getLog_content() {
+        return log_content;
+    }
 
+    public void setLog_content(String log_content) {
+        this.log_content = log_content;
+    }
+
+    @Override
+    public String toString() {
+        return  "[" + log_type +
+                "] log_id:" + log_id +
+                ", log_date:" + log_date +
+                ", log_content:'" + log_content + '\n';
+    }
 }
