@@ -43,16 +43,9 @@ public class Image {
     @Override
     public String toString() {
         return "Image{" +
-//                "content=" + Arrays.toString(content) +
+                ", imageId='" + id + '\'' +
                 ", mime='" + mime + '\'' +
                 '}';
     }
 
-
-    public String printImg() {
-        return "Image{" +
-                "mime='" + mime + '\'' +
-                ", id=" + id +
-                '}';
-    }
 }

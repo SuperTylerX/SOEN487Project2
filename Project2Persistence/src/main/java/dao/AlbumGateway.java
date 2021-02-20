@@ -105,47 +105,47 @@ public class AlbumGateway {
         }
     }
 
-    //delete album by isrc
-    public boolean deleteAlbumByISRC(String isrc) {
-        Connection connection = DBConnection.getConnection();
-
-        try {
-            int j = 1;
-            String query_get_attach_id = "select image_id from albums where album_isrc= ? ";
-            PreparedStatement ps = connection.prepareStatement(query_get_attach_id, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, isrc);
-            ResultSet rs = ps.executeQuery();
-            int album_attach_id = -1;
-            while (rs.next()) {
-                album_attach_id = rs.getInt("image_id");
-            }
-            //delete post
-            String query = "delete from albums where album_isrc = ? ;";
-            PreparedStatement ps1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps1.setString(1, isrc);
-            int i = ps1.executeUpdate();
-            //delete attachment
-            if (album_attach_id != 0) {
-                String del_att = "delete from images where image_id = ? ;";
-                PreparedStatement ps2 = connection.prepareStatement(del_att, Statement.RETURN_GENERATED_KEYS);
-                ps2.setInt(1, album_attach_id);
-                j = ps2.executeUpdate();
-            }
-            if (i == 1 && j == 1) {
-                log.createLog("DELETE", "SUCCESS: delete album which isrc is: " + isrc);
-            } else {
-                log.createLog("DELETE", "FAILED: delete album which isrc is: " + isrc + " success, there is no album has this isrc");
-            }
-            return i == 1 && j == 1;
-        } catch (Exception e) {
-            log.createLog("DELETE", "FAILED: delete album which isrc is: " + isrc + " FIALED");
-            e.printStackTrace();
-            return false;
-        }
-    }
+//    //delete album by isrc
+//    public boolean deleteAlbumByISRC(String isrc) {
+//        Connection connection = DBConnection.getConnection();
+//
+//        try {
+//            int j = 1;
+//            String query_get_attach_id = "select image_id from albums where album_isrc= ? ";
+//            PreparedStatement ps = connection.prepareStatement(query_get_attach_id, Statement.RETURN_GENERATED_KEYS);
+//            ps.setString(1, isrc);
+//            ResultSet rs = ps.executeQuery();
+//            int album_attach_id = -1;
+//            while (rs.next()) {
+//                album_attach_id = rs.getInt("image_id");
+//            }
+//            //delete post
+//            String query = "delete from albums where album_isrc = ? ;";
+//            PreparedStatement ps1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//            ps1.setString(1, isrc);
+//            int i = ps1.executeUpdate();
+//            //delete attachment
+//            if (album_attach_id != 0) {
+//                String del_att = "delete from images where image_id = ? ;";
+//                PreparedStatement ps2 = connection.prepareStatement(del_att, Statement.RETURN_GENERATED_KEYS);
+//                ps2.setInt(1, album_attach_id);
+//                j = ps2.executeUpdate();
+//            }
+//            if (i == 1 && j == 1) {
+//                log.createLog("DELETE", "SUCCESS: delete album which isrc is: " + isrc);
+//            } else {
+//                log.createLog("DELETE", "FAILED: delete album which isrc is: " + isrc + " success, there is no album has this isrc");
+//            }
+//            return i == 1 && j == 1;
+//        } catch (Exception e) {
+//            log.createLog("DELETE", "FAILED: delete album which isrc is: " + isrc + " FIALED");
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
     //update album
-    public boolean updateAlbum(Album album, int albumID, int imageID) {
+    public boolean updateAlbum(Album album, int imageID) {
 
         Connection connection = DBConnection.getConnection();
 
@@ -164,24 +164,24 @@ public class AlbumGateway {
             ps.setString(5, album.getArtist());
 
             if (imageID == 0) {
-                ps.setInt(6, albumID);
+                ps.setInt(6, album.getAlbumID());
             } else {
                 ps.setInt(6, imageID);
-                ps.setInt(7, albumID);
+                ps.setInt(7, album.getAlbumID());
             }
 
             int i = ps.executeUpdate();
 
             if (i == 1) {
-                log.createLog("UPDATE", "UPDATE: update album: " + album + " success");
+                log.createLog("UPDATE", "update album: " + album + " successfully");
                 return true;
             }
         } catch (Exception e) {
-            log.createLog("UPDATE", "UPDATE: update album: " + album + " FAILED");
+            log.createLog("UPDATE", "update album: " + album + " failed");
             e.printStackTrace();
             return false;
         }
-        log.createLog("UPDATE", "UPDATE: update album: " + album + " FAILED");
+        log.createLog("UPDATE", "update album: " + album + " failed");
         return false;
     }
 
@@ -203,11 +203,10 @@ public class AlbumGateway {
                 album.setYear(rs.getInt("album_year"));
                 albums.add(album);
             }
-            log.createLog("SEARCH", "get all albums success");
-            removeDuplicated(albums);
+            log.createLog("SEARCH", "get all albums successfully");
             return albums;
         } catch (SQLException e) {
-            log.createLog("SEARCH", "get all albums FAILED");
+            log.createLog("SEARCH", "get all albums failed");
             e.printStackTrace();
             return null;
         } finally {
@@ -234,7 +233,6 @@ public class AlbumGateway {
             if (rs.next()) {
                 Album al = new Album();
                 al.setAlbumID(rs.getInt("album_id"));
-
                 al.setISRC(rs.getString("album_isrc"));
                 al.setTitle(rs.getString("album_title"));
                 al.setDescription(rs.getString("album_description"));
@@ -248,16 +246,16 @@ public class AlbumGateway {
                     al.setImg(img);
                 }
                 connection.close();
-                log.createLog("SEARCH", "get albums by ID: " + album_id + " success");
+                log.createLog("SEARCH", "get albums by ID: " + album_id + " successfully");
                 return al;
             } else {
                 connection.close();
-                log.createLog("SEARCH", "get albums by ID: " + album_id + " success, no albums has this ID");
+                log.createLog("SEARCH", "get albums by ID: " + album_id + " successfully, invalid ID");
                 return null;
             }
 
         } catch (SQLException e) {
-            log.createLog("SEARCH", "get albums by ID: " + album_id + " FAILED");
+            log.createLog("SEARCH", "get albums by ID: " + album_id + " failed");
             e.printStackTrace();
             return null;
         } finally {
@@ -433,7 +431,6 @@ public class AlbumGateway {
             while (rs.next()) {
                 Album al = new Album();
                 al.setAlbumID(rs.getInt("album_id"));
-
                 al.setISRC(rs.getString("album_isrc"));
                 al.setTitle(rs.getString("album_title"));
                 al.setDescription(rs.getString("album_description"));

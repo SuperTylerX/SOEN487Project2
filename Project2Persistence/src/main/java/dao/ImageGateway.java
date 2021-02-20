@@ -5,12 +5,12 @@ import model.Image;
 
 import java.sql.*;
 
-public class ImageAttachmentGateway {
+public class ImageGateway {
     //for log
     LogGateway log = new LogGateway();
 
-    //return image id after image is created. return -1 means creat fail
-    public int createAttachment(Image image) {
+    //return image id after image has been created. return -1 means creat fail
+    public int createImage(Image image) {
 
         Connection connection = DBConnection.getConnection();
 
@@ -25,21 +25,19 @@ public class ImageAttachmentGateway {
 
             // get the attachID
             if (i == 1) {
-                log.createLog("CREATE", "create image Attachment " + image.printImg() + " success");
+                log.createLog("CREATE", "create image " + image + " successfully");
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         image.setId(generatedKeys.getInt(1));
                     }
                 }
             } else {
-                log.createLog("CREATE", "create image Attachment " + image.printImg() + " FAILED");
-
+                log.createLog("CREATE", "create image " + image + " failed");
                 return -1;
             }
             return image.getId();
         } catch (SQLException ex) {
-            log.createLog("CREATE", "create image Attachment " + image.printImg() + " FAILED");
-
+            log.createLog("CREATE", "create image " + image + " failed");
             ex.printStackTrace();
             return -1;
         } finally {
@@ -51,28 +49,26 @@ public class ImageAttachmentGateway {
         }
     }
 
-    //return true when success delete
-    public boolean deleteAttachment(int imageID) {
+    //return true if delete image successfully
+    public boolean deleteImage(int imageID) {
         Connection connection = DBConnection.getConnection();
         try {
-            //delete attachment
+            //delete image
             if (imageID != 0) {
                 String query = "DELETE FROM images WHERE image_id = ?";
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, imageID);
                 int i = ps.executeUpdate();
                 if (i == 1) {
-                    log.createLog("DELETE", "delete image Attachment with id " + imageID + " success");
+                    log.createLog("DELETE", "delete image with id " + imageID + " success");
                 } else {
-                    log.createLog("DELETE", "delete image Attachment with id " + imageID + " success, no image has this ID");
-
+                    log.createLog("DELETE", "delete image with id " + imageID + " success, invalid ID");
                 }
                 return i == 1;
             }
             return false;
         } catch (SQLException ex) {
-            log.createLog("DELETE", "delete image Attachment with id " + imageID + " FAILED");
-
+            log.createLog("DELETE", "delete image with id " + imageID + " failed");
             ex.printStackTrace();
             return false;
         } finally {
@@ -86,16 +82,15 @@ public class ImageAttachmentGateway {
     }
 
     //return an image obj
-    public Image getAttachment(int ImageID, int AlbumID) {
+    public Image getImage(int imageID) {
 
         Connection connection = DBConnection.getConnection();
         try {
 
             Statement stmt = connection.createStatement();
-            String query = "select * from albums as al,images as im where al.image_id=im.image_id and album_id = ? and im.image_id = ?;";
+            String query = "select * from albums as al,images as im where al.image_id=im.image_id and im.image_id = ?;";
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, AlbumID);
-            ps.setInt(2, ImageID);
+            ps.setInt(1, imageID);
             ResultSet rs = ps.executeQuery();
 
             Image image = new Image();
@@ -105,20 +100,16 @@ public class ImageAttachmentGateway {
                 image.setId(rs.getInt("image_id"));
                 image.setContent(rs.getBytes("image_content"));
                 connection.close();
-                log.createLog("GET", "Get image Attachment with imageID " + ImageID + " and albumID: " + AlbumID + " SUCCESS");
-
+                log.createLog("GET", "get image with ID " + imageID + " successfully");
                 return image;
             } else {
                 connection.close();
-                log.createLog("GET", "Get image Attachment with imageID " + ImageID + " and albumID: " + AlbumID + " SUCCESS, no such image");
-
+                log.createLog("GET", "get image with ID " + imageID + " failed, invalid image id");
                 return null;
             }
 
         } catch (SQLException e) {
-
-            log.createLog("GET", "Get image Attachment with imageID " + ImageID + " and albumID: " + AlbumID + " FAILED");
-
+            log.createLog("GET", "get image with ID " + imageID + " failed");
             e.printStackTrace();
             return null;
         } finally {
@@ -131,7 +122,7 @@ public class ImageAttachmentGateway {
     }
 
     //update image by ID
-    public boolean updateImage(Image image,  int imageID) {
+    public boolean updateImage(Image image, int imageID) {
 
         Connection connection = DBConnection.getConnection();
 
@@ -141,19 +132,19 @@ public class ImageAttachmentGateway {
 
             ps.setBytes(1, image.getContent());
             ps.setString(2, image.getMime());
-            ps.setInt(3,imageID);
+            ps.setInt(3, imageID);
 
             int i = ps.executeUpdate();
             if (i == 1) {
-                log.createLog("UPDATE", "UPDATE: update image: " + image.printImg() + " success");
+                log.createLog("UPDATE", "update image: " + image + " successfully");
                 return true;
             }
         } catch (Exception e) {
-            log.createLog("UPDATE", "UPDATE: update image: " + image.printImg() + " FAILED");
+            log.createLog("UPDATE", "update image: " + image + " failed");
             e.printStackTrace();
             return false;
         }
-        log.createLog("UPDATE", "UPDATE: update image: " + image.printImg() + " FAILED, no image has this ID");
+        log.createLog("UPDATE", "update image: " + image + " failed, invalid ID");
         return false;
     }
 

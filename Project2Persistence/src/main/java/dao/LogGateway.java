@@ -1,26 +1,24 @@
 package dao;
 
 import MyException.RepException;
-import model.Image;
 import model.Logs;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class LogGateway {
-    //return 1 if log create success, -1 not success
-    public int createLog(String type,String content) {
+    // return 1 if log create successfully, -1 not successfully
+    public int createLog(String type, String content) {
         Connection connection = DBConnection.getConnection();
         try {
             String query = "INSERT INTO logs (log_type,log_date,log_content) VALUES(?,?,?)";
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, type);
-            long date=System.currentTimeMillis();
+            long date = System.currentTimeMillis();
             ps.setLong(2, date);
             ps.setString(3, content);
-            int i = ps.executeUpdate();
-            return i;
+            return ps.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return -1;
@@ -32,6 +30,7 @@ public class LogGateway {
             }
         }
     }
+
     // search logs with time range
     public ArrayList<Logs> readLogsByDate(long startDate, long endDate) {
         ArrayList<Logs> Logs = new ArrayList<>();
@@ -67,6 +66,7 @@ public class LogGateway {
         }
 
     }
+
     // search all logs
     public ArrayList<Logs> readAllLogs() {
         ArrayList<Logs> Logs = new ArrayList<>();
@@ -96,6 +96,7 @@ public class LogGateway {
         }
 
     }
+
     // search logs by type
     public ArrayList<Logs> readLogsByType(String type) {
         ArrayList<Logs> Logs = new ArrayList<>();
@@ -126,7 +127,6 @@ public class LogGateway {
             }
         }
     }
-    //todo place all logs
 
     //clear logs
     public void clearLog() throws RepException {

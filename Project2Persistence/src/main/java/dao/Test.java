@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 public class Test {
     public static void main(String[] args) {
-        ImageAttachmentGateway img=new ImageAttachmentGateway();
-        AlbumGateway alg=new AlbumGateway();
-        Album a1=new Album("12345","title","descrip 1",1999,"xiangxiang");
+        ImageGateway img = new ImageGateway();
+        AlbumGateway alg = new AlbumGateway();
+        Album a1 = new Album("12345", "title", "descrip 1", 1999, "xiangxiang");
 //        alg.createAlbum(a1,0);
 
 //        ArrayList<Album> albums = alg.getAllAlbums();
@@ -30,15 +30,17 @@ public class Test {
 //        alg.deleteAlbumByID(1);
 //        alg.deleteAlbumByISRC("12345");
 //        alg.deleteAlbumByISRC("12345");
-        Album a2=new Album("2222","title","descrip 1",1999,"xiangxiang");
+//        Album a2 = new Album("2222", "title", "descrip 1", 1999, "xiangxiang");
 
 //        alg.updateAlbum(a2,3,0);
-        Image i=new Image(new byte[5],"mime2");
+//        Image i = new Image(new byte[5], "mime2");
 //        img.createAttachment(i);
 //        Image i2=img.getAttachment(1,3);
 //        System.out.println(i2);
 //        img.deleteAttachment(3);
-        img.updateImage(i,2);
+//        img.updateImage(i, 2);
+        System.out.println(img.getImage(3));
+
 
 
     }
