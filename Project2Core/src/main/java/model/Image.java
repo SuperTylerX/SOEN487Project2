@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class Image {
     private byte[] content;
     private String mime;
+    private int id;
 
     public Image(byte[] content, String mime) {
         this.content = content;
@@ -31,11 +32,27 @@ public class Image {
         this.mime = mime;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "Image{" +
-                "content=" + Arrays.toString(content) +
+//                "content=" + Arrays.toString(content) +
                 ", mime='" + mime + '\'' +
+                '}';
+    }
+
+
+    public String printImg() {
+        return "Image{" +
+                "mime='" + mime + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

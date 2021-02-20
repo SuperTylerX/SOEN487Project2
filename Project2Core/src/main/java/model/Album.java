@@ -2,11 +2,13 @@ package model;
 
 public class Album {
 
+    private int albumID;
     private String ISRC;
     private String title;
     private String description;
     private int year;
     private String artist;
+    private Image img;
 
     public Album(String ISRC, String title, String description, int year, String artist) {
         this.ISRC = ISRC;
@@ -72,14 +74,32 @@ public class Album {
         this.artist = artist;
     }
 
+    public int getAlbumID() {
+        return albumID;
+    }
+
+    public void setAlbumID(int albumID) {
+        this.albumID = albumID;
+    }
+
+    public Image getImg() {
+        return img;
+    }
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
+
     @Override
     public String toString() {
         return "Album{" +
-                "ISRC='" + ISRC + '\'' +
+                "albumID=" + albumID +
+                ", ISRC='" + ISRC + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", year=" + year +
                 ", artist='" + artist + '\'' +
+                ", img=" + img +
                 '}';
     }
 
