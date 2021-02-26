@@ -9,7 +9,6 @@
         <module name="Project2Service" />
         <module name="Project2Implement" />
         <module name="Project2Core" />
-        <module name="Project2Client" />
         <module name="Project2Persistence" />
       </profile>
     </annotationProcessing>

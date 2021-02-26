@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../Project2Client/Project2Client.iml" filepath="$PROJECT_DIR$/../Project2Client/Project2Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Project2Core/Project2Core.iml" filepath="$PROJECT_DIR$/../Project2Core/Project2Core.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Project2Implement/Project2Implement.iml" filepath="$PROJECT_DIR$/../Project2Implement/Project2Implement.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Project2Persistence/Project2Persistence.iml" filepath="$PROJECT_DIR$/../Project2Persistence/Project2Persistence.iml" />

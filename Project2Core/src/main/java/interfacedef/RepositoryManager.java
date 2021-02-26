@@ -17,7 +17,7 @@ public interface RepositoryManager {
 
     boolean updateAlbum(Album album);
 
-    void addImage(Image image);
+    int addImage(Image image);
 
     boolean removeImage(int id);
 

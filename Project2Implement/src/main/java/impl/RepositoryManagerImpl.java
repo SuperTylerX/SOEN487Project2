@@ -1,5 +1,6 @@
 package impl;
 
+import dao.ImageGateway;
 import interfacedef.*;
 import model.*;
 
@@ -61,8 +62,9 @@ public class RepositoryManagerImpl implements RepositoryManager {
     }
 
     @Override
-    public void addImage(Image image) {
-
+    public int addImage(Image image) {
+        ImageGateway imageGateway = new ImageGateway();
+        return imageGateway.createImage(image);
     }
 
     @Override
@@ -72,7 +74,8 @@ public class RepositoryManagerImpl implements RepositoryManager {
 
     @Override
     public Image getImage(int id) {
-        return null;
+        ImageGateway imageGateway = new ImageGateway();
+        return imageGateway.getImage(id);
     }
 
 }

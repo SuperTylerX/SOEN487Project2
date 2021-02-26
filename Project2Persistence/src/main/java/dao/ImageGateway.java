@@ -88,7 +88,7 @@ public class ImageGateway {
         try {
 
             Statement stmt = connection.createStatement();
-            String query = "select * from albums as al,images as im where al.image_id=im.image_id and im.image_id = ?;";
+            String query = "select * from images as im where im.image_id = ?;";
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, imageID);
             ResultSet rs = ps.executeQuery();

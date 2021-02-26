@@ -1,10 +1,11 @@
 package model;
 
-import java.util.Arrays;
+import javax.xml.bind.annotation.XmlElement;
 
 public class Image {
     private byte[] content;
     private String mime;
+    @XmlElement
     private int id;
 
     public Image(byte[] content, String mime) {

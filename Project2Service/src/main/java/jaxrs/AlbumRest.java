@@ -72,8 +72,8 @@ public class AlbumRest {
 
 
     @DELETE
-    @Path("delete/{isrc}")
-    public String removeAlbum(@PathParam("isrc") String isrc) {
+    @Path("delete")
+    public String removeAlbum(@FormParam("id") String isrc) {
         RepositoryManager manager = RepositoryManagerImpl.getInstance();
         boolean flag = manager.removeAlbum(isrc);
         if (flag) {
