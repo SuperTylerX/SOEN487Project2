@@ -1,14 +1,29 @@
 package model;
 
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "album")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Album {
 
+    @XmlElement
     private int albumID;
+    @XmlElement
     private String ISRC;
+    @XmlElement
     private String title;
+    @XmlElement
     private String description;
+    @XmlElement
     private int year;
+    @XmlElement
     private String artist;
     private Image img;
+
 
     public Album(String ISRC, String title, String description, int year, String artist) {
         this.ISRC = ISRC;

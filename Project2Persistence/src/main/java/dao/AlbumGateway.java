@@ -11,12 +11,12 @@ public class AlbumGateway {
     LogGateway log = new LogGateway();
 
     //creat album return album id
-    public int createAlbum(Album album, int attachID) {
+    public int createAlbum(Album album) {
         Connection connection = DBConnection.getConnection();
-
+        int imageId = album.getImg().getId();
         try {
             String query;
-            if (attachID == 0) {
+            if (imageId == 0) {
                 query = "INSERT INTO albums (album_isrc,album_title,album_description,album_year,album_artist) VALUES(?, ?, ?, ?, ?)";
             } else {
                 query = "INSERT INTO albums (album_isrc,album_title,album_description,album_year,album_artist,image_id) VALUES(?, ?, ?, ?, ?, ?)";
@@ -30,8 +30,8 @@ public class AlbumGateway {
             ps.setInt(4, album.getYear());
             ps.setString(5, album.getArtist());
 
-            if (attachID != 0) {
-                ps.setInt(6, attachID);
+            if (imageId != 0) {
+                ps.setInt(6, imageId);
             }
 
             int i = ps.executeUpdate();
@@ -145,13 +145,13 @@ public class AlbumGateway {
 //    }
 
     //update album
-    public boolean updateAlbum(Album album, int imageID) {
+    public boolean updateAlbum(Album album) {
 
         Connection connection = DBConnection.getConnection();
-
+        int imageId = album.getImg().getId();
         try {
             PreparedStatement ps;
-            if (imageID == 0) {
+            if (imageId == 0) {
                 ps = connection.prepareStatement("UPDATE albums SET album_isrc=?,album_title=?,album_description=?,album_year=?,album_artist=?,image_id= NULL WHERE album_id=?");
             } else {
                 ps = connection.prepareStatement("UPDATE albums SET album_isrc=?,album_title=?,album_description=?,album_year=?,album_artist=?,image_id=? WHERE album_id=?");
@@ -163,10 +163,10 @@ public class AlbumGateway {
             ps.setInt(4, album.getYear());
             ps.setString(5, album.getArtist());
 
-            if (imageID == 0) {
+            if (imageId == 0) {
                 ps.setInt(6, album.getAlbumID());
             } else {
-                ps.setInt(6, imageID);
+                ps.setInt(6, imageId);
                 ps.setInt(7, album.getAlbumID());
             }
 
@@ -201,6 +201,9 @@ public class AlbumGateway {
                 album.setTitle(rs.getString("album_title"));
                 album.setDescription(rs.getString("album_description"));
                 album.setYear(rs.getInt("album_year"));
+                Image image = new Image();
+                image.setId(rs.getInt("image_id"));
+                album.setImg(image);
                 albums.add(album);
             }
             log.createLog("SEARCH", "get all albums successfully");
