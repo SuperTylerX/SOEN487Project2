@@ -1,7 +1,9 @@
 package impl;
 
+import MyException.RepException;
 import dao.AlbumGateway;
 import dao.ImageGateway;
+import dao.LogGateway;
 import interfacedef.*;
 import model.*;
 
@@ -18,6 +20,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
 
     private final AlbumGateway albumGateway = new AlbumGateway();
     private final ImageGateway imageGateway = new ImageGateway();
+    private final LogGateway logGateway = new LogGateway();
 
     @Override
     public int addAlbum(Album album) {
@@ -78,6 +81,26 @@ public class RepositoryManagerImpl implements RepositoryManager {
     @Override
     public Image getImage(int id) {
         return imageGateway.getImage(id);
+    }
+
+    @Override
+    public ArrayList<Logs> getLogsByType(String type) {
+        return logGateway.readLogsByType(type);
+    }
+
+    @Override
+    public ArrayList<Logs> getAllLogs() {
+        return logGateway.readAllLogs();
+    }
+
+    @Override
+    public ArrayList<Logs> getLogsByDate(long start, long end) {
+        return logGateway.readLogsByDate(start, end);
+    }
+
+    @Override
+    public void clearLogs() throws RepException{
+        throw new RepException("The method is not yet supported.");
     }
 
 }

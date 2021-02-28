@@ -1,7 +1,9 @@
 package interfacedef;
 
+import MyException.RepException;
 import model.Album;
 import model.Image;
+import model.Logs;
 
 import java.util.ArrayList;
 
@@ -31,4 +33,11 @@ public interface RepositoryManager {
 
     Image getImage(int id);
 
+    ArrayList<Logs> getLogsByType(String type);
+
+    ArrayList<Logs> getAllLogs();
+
+    ArrayList<Logs> getLogsByDate(long start, long end);
+
+    void clearLogs() throws RepException;
 }
