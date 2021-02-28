@@ -69,27 +69,29 @@ public class AlbumGateway {
     //delete album by ID
     public boolean deleteAlbumByID(int albumID) {
         Connection connection = DBConnection.getConnection();
-
+        System.out.println(albumID);
         try {
             int j = 1;
-            String query_get_attach_id = "select image_id from albums where album_id= ? ";
-            PreparedStatement ps = connection.prepareStatement(query_get_attach_id, Statement.RETURN_GENERATED_KEYS);
+            String query_get_image_id = "select image_id from albums where album_id= ? ";
+            PreparedStatement ps = connection.prepareStatement(query_get_image_id, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, albumID);
             ResultSet rs = ps.executeQuery();
-            int album_attach_id = -1;
+            int album_image_id = -1;
             while (rs.next()) {
-                album_attach_id = rs.getInt("image_id");
+                album_image_id = rs.getInt("image_id");
             }
-            //delete post
+
+            // delete album
             String query = "delete from albums where album_id = ? ;";
             PreparedStatement ps1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps1.setInt(1, albumID);
             int i = ps1.executeUpdate();
-            //delete attachment
-            if (album_attach_id != 0) {
+
+            // delete image
+            if (album_image_id != 0) {
                 String del_att = "delete from images where image_id = ? ;";
                 PreparedStatement ps2 = connection.prepareStatement(del_att, Statement.RETURN_GENERATED_KEYS);
-                ps2.setInt(1, album_attach_id);
+                ps2.setInt(1, album_image_id);
                 j = ps2.executeUpdate();
             }
             if (i == 1 && j == 1) {
@@ -104,45 +106,6 @@ public class AlbumGateway {
             return false;
         }
     }
-
-//    //delete album by isrc
-//    public boolean deleteAlbumByISRC(String isrc) {
-//        Connection connection = DBConnection.getConnection();
-//
-//        try {
-//            int j = 1;
-//            String query_get_attach_id = "select image_id from albums where album_isrc= ? ";
-//            PreparedStatement ps = connection.prepareStatement(query_get_attach_id, Statement.RETURN_GENERATED_KEYS);
-//            ps.setString(1, isrc);
-//            ResultSet rs = ps.executeQuery();
-//            int album_attach_id = -1;
-//            while (rs.next()) {
-//                album_attach_id = rs.getInt("image_id");
-//            }
-//            //delete post
-//            String query = "delete from albums where album_isrc = ? ;";
-//            PreparedStatement ps1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-//            ps1.setString(1, isrc);
-//            int i = ps1.executeUpdate();
-//            //delete attachment
-//            if (album_attach_id != 0) {
-//                String del_att = "delete from images where image_id = ? ;";
-//                PreparedStatement ps2 = connection.prepareStatement(del_att, Statement.RETURN_GENERATED_KEYS);
-//                ps2.setInt(1, album_attach_id);
-//                j = ps2.executeUpdate();
-//            }
-//            if (i == 1 && j == 1) {
-//                log.createLog("DELETE", "SUCCESS: delete album which isrc is: " + isrc);
-//            } else {
-//                log.createLog("DELETE", "FAILED: delete album which isrc is: " + isrc + " success, there is no album has this isrc");
-//            }
-//            return i == 1 && j == 1;
-//        } catch (Exception e) {
-//            log.createLog("DELETE", "FAILED: delete album which isrc is: " + isrc + " FIALED");
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
 
     //update album
     public boolean updateAlbum(Album album) {
@@ -196,6 +159,7 @@ public class AlbumGateway {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Album album = new Album();
+                album.setAlbumID(rs.getInt("album_id"));
                 album.setArtist(rs.getString("album_artist"));
                 album.setISRC(rs.getString("album_isrc"));
                 album.setTitle(rs.getString("album_title"));

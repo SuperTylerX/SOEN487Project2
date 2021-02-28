@@ -90,9 +90,9 @@ public class AlbumRest {
         try {
             boolean flag = manager.updateAlbum(album);
             if (flag) {
-                response.put("status", 500);
-            } else {
                 response.put("status", 200);
+            } else {
+                response.put("status", 500);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -110,15 +110,14 @@ public class AlbumRest {
     @DELETE
     @Path("delete")
     @Produces(MediaType.APPLICATION_JSON)
-    public String removeAlbum(@QueryParam("albumId") int albumID) {
+    public String removeAlbum(@QueryParam("albumID") int albumID) {
         JSONObject response = new JSONObject();
         try {
-            System.out.println("?????");
             boolean flag = manager.removeAlbum(albumID);
             if (flag) {
-                response.put("status", 500);
-            } else {
                 response.put("status", 200);
+            } else {
+                response.put("status", 500);
             }
         } catch (JSONException e) {
             e.printStackTrace();

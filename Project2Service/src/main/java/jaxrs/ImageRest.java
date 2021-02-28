@@ -55,7 +55,6 @@ public class ImageRest {
             }
             return response.toString();
         }
-        System.out.println(response);
         return response.toString();
     }
 
@@ -64,7 +63,6 @@ public class ImageRest {
     @Path("download")
     public Response getImage(@QueryParam("id") int id) {
         Image image = manager.getImage(id);
-        System.out.println(image);
         return Response.status(200).entity(image.getContent()).type(image.getMime()).build();
     }
 
