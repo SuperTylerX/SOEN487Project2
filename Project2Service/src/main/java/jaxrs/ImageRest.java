@@ -66,4 +66,30 @@ public class ImageRest {
         return Response.status(200).entity(image.getContent()).type(image.getMime()).build();
     }
 
+
+    @DELETE
+    @Path("delete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String removeImage(@QueryParam("id") int id) {
+        JSONObject response = new JSONObject();
+        try {
+            boolean flag = manager.removeImage(id);
+            if (flag) {
+                response.put("status", 200);
+            } else {
+                response.put("status", 500);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            try {
+                response.put("status", 500);
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace();
+            }
+            return response.toString();
+        }
+        return response.toString();
+    }
+
+
 }
