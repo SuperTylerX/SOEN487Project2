@@ -76,11 +76,6 @@ public class RepositoryManagerImpl implements RepositoryManager {
     }
 
     @Override
-    public boolean updateImage(Image image, int id) {
-        return imageGateway.updateImage(image, id);
-    }
-
-    @Override
     public Image getImage(int id) {
         return imageGateway.getImage(id);
     }

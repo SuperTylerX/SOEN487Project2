@@ -67,45 +67,6 @@ public class ImageRest {
     }
 
 
-    @PUT
-    @Path("update")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String updateImage(@QueryParam("id") int imageId, @FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart bodyPart) {
-        JSONObject response = new JSONObject();
-        String mime = bodyPart.getMediaType().toString();
-        byte[] buff = new byte[8000];
-        int bytesRead = 0;
-        try {
-            ByteArrayOutputStream bao = new ByteArrayOutputStream();
-            while ((bytesRead = uploadedInputStream.read(buff)) != -1) {
-                bao.write(buff, 0, bytesRead);
-            }
-            byte[] fileData = bao.toByteArray();
-            Image image = new Image(fileData, mime);
-            boolean flag = manager.updateImage(image, imageId);
-
-            if (flag) {
-                response.put("status", 200);
-                response.put("id", imageId);
-            } else {
-                response.put("status", 500);
-            }
-            bao.close();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-            try {
-                response.put("status", 500);
-            } catch (JSONException jsonException) {
-                jsonException.printStackTrace();
-            }
-            return response.toString();
-        }
-        return response.toString();
-
-    }
-
-
     @DELETE
     @Path("delete")
     @Produces(MediaType.APPLICATION_JSON)
