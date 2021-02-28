@@ -3,17 +3,25 @@ package interfacedef;
 import model.Album;
 import model.Image;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface RepositoryManager {
 
-    void addAlbum(Album album);
+    int addAlbum(Album album);
 
-    boolean removeAlbum(String isrc);
+    boolean removeAlbum(int albumID);
 
-    Album getAlbum(String isrc);
+    Album getAlbumByISRC(String isrc);
 
-    List<Album> getAlbums();
+    Album getAlbumByID(int albumID);
+
+    ArrayList<Album> getAlbumByTitle(String title);
+
+    ArrayList<Album> getAlbumByYear(int year);
+
+    ArrayList<Album> getAlbumByArtist(String artist);
+
+    ArrayList<Album> getAlbums();
 
     boolean updateAlbum(Album album);
 

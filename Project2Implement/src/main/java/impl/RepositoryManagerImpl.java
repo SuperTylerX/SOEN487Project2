@@ -1,64 +1,69 @@
 package impl;
 
+import dao.AlbumGateway;
 import dao.ImageGateway;
 import interfacedef.*;
 import model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RepositoryManagerImpl implements RepositoryManager {
 
-    private List<Album> albums = new CopyOnWriteArrayList<>();
+    //    private List<Album> albums = new CopyOnWriteArrayList<>();
     private static final RepositoryManagerImpl single_instance = new RepositoryManagerImpl();
 
     public static RepositoryManagerImpl getInstance() {
         return single_instance;
     }
 
+    private AlbumGateway albumGateway = new AlbumGateway();
+
     @Override
-    public void addAlbum(Album album) {
-        albums.add(album);
+    public int addAlbum(Album album) {
+        return albumGateway.createAlbum(album);
     }
 
     @Override
-    public boolean removeAlbum(String isrc) {
-        for (int i = 0; i < albums.size(); i++) {
-            if (albums.get(i).getISRC().equals(isrc)) {
-                albums.remove(i);
-                return true;
-            }
-        }
-        return false;
+    public boolean removeAlbum(int albumID) {
+        return albumGateway.deleteAlbumByID(albumID);
     }
 
     @Override
-    public Album getAlbum(String isrc) {
-        for (Album album : albums) {
-            if (album.getISRC().equals(isrc)) {
-                return album.clone();
-            }
-        }
-        return null;
+    public Album getAlbumByISRC(String isrc) {
+        return albumGateway.getAlbumByISRC(isrc);
     }
 
     @Override
-    public List<Album> getAlbums() {
-        return (CopyOnWriteArrayList) ((CopyOnWriteArrayList) albums).clone();
+    public Album getAlbumByID(int albumID) {
+        return albumGateway.getAlbumByID(albumID);
+    }
+
+    @Override
+    public ArrayList<Album> getAlbumByTitle(String title) {
+        return albumGateway.getAlbumByTitle(title);
+    }
+
+    @Override
+    public ArrayList<Album> getAlbumByYear(int year) {
+        return albumGateway.getAlbumByYear(year);
+    }
+
+    @Override
+    public ArrayList<Album> getAlbumByArtist(String artist) {
+        return albumGateway.getAlbumByArtist(artist);
+    }
+
+
+    @Override
+    public ArrayList<Album> getAlbums() {
+        return albumGateway.getAllAlbums();
     }
 
     @Override
     public boolean updateAlbum(Album album) {
-        for (Album a : albums) {
-            if (a.getISRC().equals(album.getISRC())) {
-                a.setArtist(album.getArtist());
-                a.setDescription(album.getDescription());
-                a.setTitle(album.getTitle());
-                a.setYear(album.getYear());
-                return true;
-            }
-        }
-        return false;
+        return albumGateway.updateAlbum(album);
     }
 
     @Override
