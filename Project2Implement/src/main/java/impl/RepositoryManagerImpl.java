@@ -6,19 +6,18 @@ import interfacedef.*;
 import model.*;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+
 
 public class RepositoryManagerImpl implements RepositoryManager {
 
-    //    private List<Album> albums = new CopyOnWriteArrayList<>();
     private static final RepositoryManagerImpl single_instance = new RepositoryManagerImpl();
 
     public static RepositoryManagerImpl getInstance() {
         return single_instance;
     }
 
-    private AlbumGateway albumGateway = new AlbumGateway();
+    private final AlbumGateway albumGateway = new AlbumGateway();
+    private final ImageGateway imageGateway = new ImageGateway();
 
     @Override
     public int addAlbum(Album album) {
@@ -68,18 +67,21 @@ public class RepositoryManagerImpl implements RepositoryManager {
 
     @Override
     public int addImage(Image image) {
-        ImageGateway imageGateway = new ImageGateway();
         return imageGateway.createImage(image);
     }
 
     @Override
     public boolean removeImage(int id) {
-        return false;
+        return imageGateway.deleteImage(id);
+    }
+
+    @Override
+    public boolean updateImage(Image image, int id) {
+        return imageGateway.updateImage(image, id);
     }
 
     @Override
     public Image getImage(int id) {
-        ImageGateway imageGateway = new ImageGateway();
         return imageGateway.getImage(id);
     }
 

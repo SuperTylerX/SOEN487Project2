@@ -29,6 +29,8 @@ public interface RepositoryManager {
 
     boolean removeImage(int id);
 
+    boolean updateImage(Image image, int id);
+
     Image getImage(int id);
 
 }
