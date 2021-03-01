@@ -7,10 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class AlbumGateway {
-    //for log
+    // for log
     LogGateway log = new LogGateway();
 
-    //creat album return album id
+    // create album and return album id
     public int createAlbum(Album album) {
         Connection connection = DBConnection.getConnection();
         int imageId = album.getImg().getId();
@@ -36,25 +36,25 @@ public class AlbumGateway {
 
             int i = ps.executeUpdate();
 
-            // get the postID
+            // get the album ID
             if (i == 1) {
-                log.createLog("CREATE", "SUCCESS: creat album: " + album);
+                log.createLog("CREATE", "create album: " + album);
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         album.setAlbumID(generatedKeys.getInt(1));
                     } else {
-                        log.createLog("CREATE", "FAIL: creat album " + album + " failed");
-                        throw new SQLException("Creating post failed, no PostID obtained.");
+                        log.createLog("CREATE", "create album " + album + " failed");
+                        throw new SQLException("create post failed, no Album ID obtained.");
                     }
                 }
             } else {
-                log.createLog("CREATE", "FAIL: creat album " + album + " failed");
+                log.createLog("CREATE", "create album " + album + " failed");
             }
 
             return album.getAlbumID();
 
         } catch (SQLException ex) {
-            log.createLog("CREATE", "FAIL: creat album " + album + " failed");
+            log.createLog("CREATE", "FAIL: create album " + album + " failed");
             ex.printStackTrace();
             return -1;
         } finally {
@@ -66,10 +66,9 @@ public class AlbumGateway {
         }
     }
 
-    //delete album by ID
+    // delete album
     public boolean deleteAlbumByID(int albumID) {
         Connection connection = DBConnection.getConnection();
-        System.out.println(albumID);
         try {
             int j = 1;
             String query_get_image_id = "select image_id from albums where album_id= ? ";
@@ -95,19 +94,19 @@ public class AlbumGateway {
                 j = ps2.executeUpdate();
             }
             if (i == 1 && j == 1) {
-                log.createLog("DELETE", "SUCCESS: delete album which id is: " + albumID);
+                log.createLog("DELETE", "delete album with id " + albumID);
             } else {
-                log.createLog("DELETE", "FAILED: delete album which id is: " + albumID + " success, there is no albums has this ID");
+                log.createLog("DELETE", "delete album with id " + albumID + " failed. invalid album id");
             }
             return i == 1 && j == 1;
         } catch (Exception e) {
-            log.createLog("DELETE", "FAILED: delete album which id is: " + albumID + " FIALED");
+            log.createLog("DELETE", "delete album  with id " + albumID + " failed");
             e.printStackTrace();
             return false;
         }
     }
 
-    //update album
+    // update album
     public boolean updateAlbum(Album album) {
 
         Connection connection = DBConnection.getConnection();
@@ -148,7 +147,7 @@ public class AlbumGateway {
         return false;
     }
 
-    //get all albums
+    // get all albums
     public ArrayList<Album> getAllAlbums() {
         ArrayList<Album> albums = new ArrayList<>();
         Connection connection = DBConnection.getConnection();
@@ -170,10 +169,8 @@ public class AlbumGateway {
                 album.setImg(image);
                 albums.add(album);
             }
-            log.createLog("SEARCH", "get all albums successfully");
             return albums;
         } catch (SQLException e) {
-            log.createLog("SEARCH", "get all albums failed");
             e.printStackTrace();
             return null;
         } finally {
@@ -186,146 +183,69 @@ public class AlbumGateway {
 
     }
 
-    //get albums by id
-    public Album getAlbumByID(int album_id) {
+    // search album
+    public ArrayList<Album> filterAlbums(Album album) {
+        String ISRC = album.getISRC();
+        String title = album.getTitle();
+        String artist = album.getArtist();
+        int year = album.getYear();
+        int id = album.getAlbumID();
+
+        ArrayList<Album> result = new ArrayList<>();
+        String query = "SELECT * " +
+                "FROM albums " +
+                "LEFT JOIN images i ON albums.image_id = i.image_id " +
+                "WHERE album_isrc LIKE ?" +
+                "AND album_year LIKE ?" +
+                "AND album_artist LIKE ?" +
+                "AND album_title LIKE ?" +
+                "AND album_id LIKE ?";
+
         Connection connection = DBConnection.getConnection();
         try {
-            Statement stmt = connection.createStatement();
-            String query = "select * from albums LEFT JOIN images i on albums.image_id = i.image_id where album_id=?;";
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, album_id);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Album al = new Album();
-                al.setAlbumID(rs.getInt("album_id"));
-                al.setISRC(rs.getString("album_isrc"));
-                al.setTitle(rs.getString("album_title"));
-                al.setDescription(rs.getString("album_description"));
-                al.setYear(rs.getInt("album_year"));
-                al.setArtist(rs.getString("album_artist"));
-
-                if (rs.getInt("image_id") != 0) {
-                    Image img = new Image();
-                    img.setId(rs.getInt("image_id"));
-                    img.setMime(rs.getString("image_mime"));
-                    al.setImg(img);
-                }
-                connection.close();
-                log.createLog("SEARCH", "get albums by ID: " + album_id + " successfully");
-                return al;
+            if (ISRC == null || ISRC.isEmpty()) {
+                ps.setString(1, "%");
             } else {
-                connection.close();
-                log.createLog("SEARCH", "get albums by ID: " + album_id + " successfully, invalid ID");
-                return null;
+                ps.setString(1, ISRC);
             }
-
-        } catch (SQLException e) {
-            log.createLog("SEARCH", "get albums by ID: " + album_id + " failed");
-            e.printStackTrace();
-            return null;
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    //get albums by isrc
-    public Album getAlbumByISRC(String isrc) {
-        Connection connection = DBConnection.getConnection();
-        try {
-            Statement stmt = connection.createStatement();
-            String query = "select * from albums LEFT JOIN images i on albums.image_id = i.image_id where album_isrc=?;";
-            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, isrc);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Album al = new Album();
-                al.setAlbumID(rs.getInt("album_id"));
-
-                al.setISRC(rs.getString("album_isrc"));
-                al.setTitle(rs.getString("album_title"));
-                al.setDescription(rs.getString("album_description"));
-                al.setYear(rs.getInt("album_year"));
-                al.setArtist(rs.getString("album_artist"));
-
-                if (rs.getInt("image_id") != 0) {
-                    Image img = new Image();
-                    img.setId(rs.getInt("image_id"));
-                    img.setMime(rs.getString("image_mime"));
-                    al.setImg(img);
-                }
-                connection.close();
-                log.createLog("SEARCH", "get albums by isrc: " + isrc + " success");
-                return al;
+            if (year == 0) {
+                ps.setString(2, "%");
             } else {
-                connection.close();
-                log.createLog("SEARCH", "get albums by isrc: " + isrc + " success, no album has this isrc");
-
-                return null;
+                ps.setInt(2, year);
             }
-
-        } catch (SQLException e) {
-            log.createLog("SEARCH", "get albums by isrc: " + isrc + " FAILED");
-
-            e.printStackTrace();
-            return null;
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (artist == null || artist.isEmpty()) {
+                ps.setString(3, "%");
+            } else {
+                ps.setString(3, artist);
             }
-        }
-
-    }
-
-    //get albums by title
-    public ArrayList<Album> getAlbumByTitle(String title) {
-        Connection connection = DBConnection.getConnection();
-        try {
-            ArrayList<Album> albums = new ArrayList<>();
-            Statement stmt = connection.createStatement();
-            String query = "select * from albums LEFT JOIN images i on albums.image_id = i.image_id where album_title=?;";
-            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, title);
-
+            if (title == null || title.isEmpty()) {
+                ps.setString(4, "%");
+            } else {
+                ps.setString(4, title);
+            }
+            if (id == 0) {
+                ps.setString(5, "%");
+            } else {
+                ps.setInt(5, id);
+            }
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Album al = new Album();
-                al.setAlbumID(rs.getInt("album_id"));
-
-                al.setISRC(rs.getString("album_isrc"));
-                al.setTitle(rs.getString("album_title"));
-                al.setDescription(rs.getString("album_description"));
-                al.setYear(rs.getInt("album_year"));
-                al.setArtist(rs.getString("album_artist"));
-
-                if (rs.getInt("image_id") != 0) {
-                    Image img = new Image();
-                    img.setId(rs.getInt("image_id"));
-                    img.setMime(rs.getString("image_mime"));
-                    al.setImg(img);
-                }
-                albums.add(al);
+                Album album1 = new Album();
+                album1.setAlbumID(rs.getInt("album_id"));
+                album1.setArtist(rs.getString("album_artist"));
+                album1.setISRC(rs.getString("album_isrc"));
+                album1.setTitle(rs.getString("album_title"));
+                album1.setDescription(rs.getString("album_description"));
+                album1.setYear(rs.getInt("album_year"));
+                Image image = new Image();
+                image.setId(rs.getInt("image_id"));
+                album1.setImg(image);
+                result.add(album1);
             }
-            log.createLog("SEARCH", "get albums by title: " + title + " success");
-            removeDuplicated(albums);
-            return albums;
-
-        } catch (SQLException e) {
-            log.createLog("SEARCH", "get albums by title: " + title + " FAILED");
-
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
         } finally {
             try {
                 connection.close();
@@ -333,115 +253,7 @@ public class AlbumGateway {
                 e.printStackTrace();
             }
         }
-
-    }
-
-    //get albums by year
-    public ArrayList<Album> getAlbumByYear(int year) {
-        Connection connection = DBConnection.getConnection();
-        ArrayList<Album> albums = new ArrayList<>();
-        try {
-            Statement stmt = connection.createStatement();
-            String query = "select * from albums LEFT JOIN images i on albums.image_id = i.image_id where album_year=?;";
-            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, year);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Album al = new Album();
-                al.setAlbumID(rs.getInt("album_id"));
-
-                al.setISRC(rs.getString("album_isrc"));
-                al.setTitle(rs.getString("album_title"));
-                al.setDescription(rs.getString("album_description"));
-                al.setYear(rs.getInt("album_year"));
-                al.setArtist(rs.getString("album_artist"));
-
-                if (rs.getInt("image_id") != 0) {
-                    Image img = new Image();
-                    img.setId(rs.getInt("image_id"));
-                    img.setMime(rs.getString("image_mime"));
-                    al.setImg(img);
-                }
-                albums.add(al);
-            }
-            log.createLog("SEARCH", "get albums by year: " + year + " success");
-            removeDuplicated(albums);
-            return albums;
-        } catch (SQLException e) {
-            log.createLog("SEARCH", "get albums by year: " + year + " FAILED");
-            e.printStackTrace();
-            return null;
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    //get albums by artist
-    public ArrayList<Album> getAlbumByArtist(String artist) {
-        Connection connection = DBConnection.getConnection();
-        ArrayList<Album> albums = new ArrayList<>();
-        try {
-            Statement stmt = connection.createStatement();
-            String query = "select * from albums LEFT JOIN images i on albums.image_id = i.image_id where album_artist=?;";
-            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, artist);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Album al = new Album();
-                al.setAlbumID(rs.getInt("album_id"));
-                al.setISRC(rs.getString("album_isrc"));
-                al.setTitle(rs.getString("album_title"));
-                al.setDescription(rs.getString("album_description"));
-                al.setYear(rs.getInt("album_year"));
-                al.setArtist(rs.getString("album_artist"));
-
-                if (rs.getInt("image_id") != 0) {
-                    Image img = new Image();
-                    img.setId(rs.getInt("image_id"));
-                    img.setMime(rs.getString("image_mime"));
-                    al.setImg(img);
-                }
-
-                albums.add(al);
-            }
-            log.createLog("SEARCH", "get albums by artist: " + artist + " success");
-            removeDuplicated(albums);
-            return albums;
-        } catch (SQLException e) {
-            log.createLog("SEARCH", "get albums by artist: " + artist + " FAILED");
-
-            e.printStackTrace();
-            return null;
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    //for remove duplicated
-    private void removeDuplicated(ArrayList<Album> Albums) {
-        for (int i = 0; i < Albums.size(); i++) {
-            for (int j = i + 1; j < Albums.size(); j++) {
-                if (Albums.get(i).getISRC().equals(Albums.get(j).getISRC())) {
-                    Albums.remove(j);
-                    j--;
-                }
-            }
-        }
-
+        return result;
     }
 
 }

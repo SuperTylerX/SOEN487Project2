@@ -33,30 +33,9 @@ public class RepositoryManagerImpl implements RepositoryManager {
     }
 
     @Override
-    public Album getAlbumByISRC(String isrc) {
-        return albumGateway.getAlbumByISRC(isrc);
+    public ArrayList<Album> filterAlbum(Album album) {
+        return albumGateway.filterAlbums(album);
     }
-
-    @Override
-    public Album getAlbumByID(int albumID) {
-        return albumGateway.getAlbumByID(albumID);
-    }
-
-    @Override
-    public ArrayList<Album> getAlbumByTitle(String title) {
-        return albumGateway.getAlbumByTitle(title);
-    }
-
-    @Override
-    public ArrayList<Album> getAlbumByYear(int year) {
-        return albumGateway.getAlbumByYear(year);
-    }
-
-    @Override
-    public ArrayList<Album> getAlbumByArtist(String artist) {
-        return albumGateway.getAlbumByArtist(artist);
-    }
-
 
     @Override
     public ArrayList<Album> getAlbums() {
@@ -99,7 +78,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
     }
 
     @Override
-    public void clearLogs() throws RepException{
+    public void clearLogs() throws RepException {
         throw new RepException("The method is not yet supported.");
     }
 

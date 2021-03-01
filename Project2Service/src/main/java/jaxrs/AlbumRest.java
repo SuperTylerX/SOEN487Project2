@@ -30,27 +30,23 @@ public class AlbumRest {
                                      @QueryParam("title") String title, @QueryParam("year") int year,
                                      @QueryParam("artist") String artist) {
         ArrayList<Album> albumArrayList = new ArrayList<>();
-        if (albumID > 0) {
-            albumArrayList.add(manager.getAlbumByID(albumID));
-        } else {
-            if (isrc != null && !isrc.isEmpty()) {
-                albumArrayList.add(manager.getAlbumByISRC(isrc));
-            } else {
-                if (title != null && !title.isEmpty()) {
-                    return manager.getAlbumByTitle(title);
-                } else {
-                    if (year > 0) {
-                        return manager.getAlbumByYear(year);
-                    } else {
-                        if (artist != null && !artist.isEmpty()) {
-                            return manager.getAlbumByArtist(artist);
-                        } else
-                            throw new NotFoundException();
-                    }
-                }
-            }
+        Album filterAlbum = new Album();
+        if (albumID != 0) {
+            filterAlbum.setAlbumID(albumID);
         }
-        return albumArrayList;
+        if (isrc != null && !isrc.isEmpty()) {
+            filterAlbum.setISRC(isrc);
+        }
+        if (title != null && !title.isEmpty()) {
+            filterAlbum.setTitle(title);
+        }
+        if (year != 0) {
+            filterAlbum.setYear(year);
+        }
+        if (artist != null && !artist.isEmpty()) {
+            filterAlbum.setArtist(artist);
+        }
+        return manager.filterAlbum(filterAlbum);
     }
 
 
