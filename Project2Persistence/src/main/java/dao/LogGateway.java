@@ -129,7 +129,7 @@ public class LogGateway {
     }
 
     //clear logs
-    public void clearLog() throws RepException {
+    public void clearLogs() throws RepException {
         throw new RepException("The method is not yet supported.");
     }
 }
