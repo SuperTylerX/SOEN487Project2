@@ -1,15 +1,14 @@
 package dao;
 
-import model.Album;
 import model.Image;
 
 import java.sql.*;
 
 public class ImageGateway {
-    //for log
+    // for log
     LogGateway log = new LogGateway();
 
-    //return image id after image has been created. return -1 means creat fail
+    // return image id after image has been created. return -1 means creat fail
     public int createImage(Image image) {
 
         Connection connection = DBConnection.getConnection();
@@ -49,7 +48,7 @@ public class ImageGateway {
         }
     }
 
-    //return true if delete image successfully
+    // return true if delete image successfully
     public boolean deleteImage(int imageID) {
         Connection connection = DBConnection.getConnection();
         try {
@@ -64,6 +63,11 @@ public class ImageGateway {
                 } else {
                     log.createLog("DELETE", "delete image with id " + imageID + " success, invalid ID");
                 }
+                // Set Album image_id to null
+                String query_set_image_id_null = "UPDATE albums set image_id = NULL where image_id = ?";
+                ps = connection.prepareStatement(query_set_image_id_null, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, imageID);
+                i = ps.executeUpdate();
                 return i == 1;
             }
             return false;
@@ -81,7 +85,7 @@ public class ImageGateway {
 
     }
 
-    //return an image obj
+    // return an image obj
     public Image getImage(int imageID) {
 
         Connection connection = DBConnection.getConnection();
@@ -100,16 +104,13 @@ public class ImageGateway {
                 image.setId(rs.getInt("image_id"));
                 image.setContent(rs.getBytes("image_content"));
                 connection.close();
-                log.createLog("GET", "get image with ID " + imageID + " successfully");
                 return image;
             } else {
                 connection.close();
-                log.createLog("GET", "get image with ID " + imageID + " failed, invalid image id");
                 return null;
             }
 
         } catch (SQLException e) {
-            log.createLog("GET", "get image with ID " + imageID + " failed");
             e.printStackTrace();
             return null;
         } finally {
@@ -119,33 +120,6 @@ public class ImageGateway {
                 e.printStackTrace();
             }
         }
-    }
-
-    //update image by ID
-    public boolean updateImage(Image image, int imageID) {
-
-        Connection connection = DBConnection.getConnection();
-
-        try {
-            PreparedStatement ps;
-            ps = connection.prepareStatement("UPDATE images SET image_content=?,image_mime=? WHERE image_id=?");
-
-            ps.setBytes(1, image.getContent());
-            ps.setString(2, image.getMime());
-            ps.setInt(3, imageID);
-
-            int i = ps.executeUpdate();
-            if (i == 1) {
-                log.createLog("UPDATE", "update image: " + image + " successfully");
-                return true;
-            }
-        } catch (Exception e) {
-            log.createLog("UPDATE", "update image: " + image + " failed");
-            e.printStackTrace();
-            return false;
-        }
-        log.createLog("UPDATE", "update image: " + image + " failed, invalid ID");
-        return false;
     }
 
 

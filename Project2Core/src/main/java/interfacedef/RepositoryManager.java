@@ -13,17 +13,9 @@ public interface RepositoryManager {
 
     boolean removeAlbum(int albumID);
 
-    Album getAlbumByISRC(String isrc);
-
-    Album getAlbumByID(int albumID);
-
-    ArrayList<Album> getAlbumByTitle(String title);
-
-    ArrayList<Album> getAlbumByYear(int year);
-
-    ArrayList<Album> getAlbumByArtist(String artist);
-
     ArrayList<Album> getAlbums();
+
+    ArrayList<Album> filterAlbum(Album album);
 
     boolean updateAlbum(Album album);
 
