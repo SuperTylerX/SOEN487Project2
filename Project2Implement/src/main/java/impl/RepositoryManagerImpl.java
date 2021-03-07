@@ -63,23 +63,13 @@ public class RepositoryManagerImpl implements RepositoryManager {
     }
 
     @Override
-    public ArrayList<Logs> getLogsByType(String type) {
-        return logGateway.readLogsByType(type);
-    }
-
-    @Override
-    public ArrayList<Logs> getAllLogs() {
-        return logGateway.readAllLogs();
-    }
-
-    @Override
-    public ArrayList<Logs> getLogsByDate(long start, long end) {
-        return logGateway.readLogsByDate(start, end);
+    public ArrayList<Logs> getLogsWithFilter(String type, long startDate, long endDate) {
+        return logGateway.getLogsWithFilter(type, startDate, endDate);
     }
 
     @Override
     public void clearLogs() throws RepException {
-        throw new RepException("The method is not yet supported.");
+        throw new RepException();
     }
 
 }

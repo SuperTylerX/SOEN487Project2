@@ -38,23 +38,22 @@ public class AlbumGateway {
 
             // get the album ID
             if (i == 1) {
-                log.createLog("CREATE", "create album: " + album);
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         album.setAlbumID(generatedKeys.getInt(1));
+                        log.createLog("CREATE", "create album: " + album.getTitle() + "successfully", album.getISRC());
                     } else {
-                        log.createLog("CREATE", "create album " + album + " failed");
-                        throw new SQLException("create post failed, no Album ID obtained.");
+                        log.createLog("CREATE", "create album failed", album.getISRC());
                     }
                 }
             } else {
-                log.createLog("CREATE", "create album " + album + " failed");
+                log.createLog("CREATE", "create album failed", album.getISRC());
             }
 
             return album.getAlbumID();
 
         } catch (SQLException ex) {
-            log.createLog("CREATE", "FAIL: create album " + album + " failed");
+            log.createLog("CREATE", "create album failed", album.getISRC());
             ex.printStackTrace();
             return -1;
         } finally {
@@ -71,13 +70,15 @@ public class AlbumGateway {
         Connection connection = DBConnection.getConnection();
         try {
             int j = 1;
-            String query_get_image_id = "select image_id from albums where album_id= ? ";
+            String query_get_image_id = "select image_id, album_isrc from albums where album_id= ? ";
             PreparedStatement ps = connection.prepareStatement(query_get_image_id, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, albumID);
             ResultSet rs = ps.executeQuery();
             int album_image_id = -1;
+            String album_isrc = "";
             while (rs.next()) {
                 album_image_id = rs.getInt("image_id");
+                album_isrc = rs.getString("album_isrc");
             }
 
             // delete album
@@ -94,13 +95,13 @@ public class AlbumGateway {
                 j = ps2.executeUpdate();
             }
             if (i == 1 && j == 1) {
-                log.createLog("DELETE", "delete album with id " + albumID);
+                log.createLog("DELETE", "delete album with id " + albumID, album_isrc);
             } else {
-                log.createLog("DELETE", "delete album with id " + albumID + " failed. invalid album id");
+                log.createLog("DELETE", "delete album with id " + albumID + " failed. invalid album id", album_isrc);
             }
             return i == 1 && j == 1;
         } catch (Exception e) {
-            log.createLog("DELETE", "delete album  with id " + albumID + " failed");
+            log.createLog("DELETE", "delete album  with id " + albumID + " failed", "");
             e.printStackTrace();
             return false;
         }
@@ -135,15 +136,15 @@ public class AlbumGateway {
             int i = ps.executeUpdate();
 
             if (i == 1) {
-                log.createLog("UPDATE", "update album: " + album + " successfully");
+                log.createLog("UPDATE", "update album \"" + album.getTitle() + "\" successfully", album.getISRC());
                 return true;
             }
         } catch (Exception e) {
-            log.createLog("UPDATE", "update album: " + album + " failed");
+            log.createLog("UPDATE", "update album \"" + album.getTitle() + "\" failed", album.getISRC());
             e.printStackTrace();
             return false;
         }
-        log.createLog("UPDATE", "update album: " + album + " failed");
+        log.createLog("UPDATE", "update album \"" + album.getTitle() + "\" failed", album.getISRC());
         return false;
     }
 

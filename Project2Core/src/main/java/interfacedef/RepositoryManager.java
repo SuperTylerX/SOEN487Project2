@@ -25,11 +25,7 @@ public interface RepositoryManager {
 
     Image getImage(int id);
 
-    ArrayList<Logs> getLogsByType(String type);
-
-    ArrayList<Logs> getAllLogs();
-
-    ArrayList<Logs> getLogsByDate(long start, long end);
+    ArrayList<Logs> getLogsWithFilter(String type, long startDate, long endDate);
 
     void clearLogs() throws RepException;
 }
