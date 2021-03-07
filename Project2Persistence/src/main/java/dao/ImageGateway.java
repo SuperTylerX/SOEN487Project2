@@ -24,19 +24,19 @@ public class ImageGateway {
 
             // get the attachID
             if (i == 1) {
-                log.createLog("CREATE", "create image " + image + " successfully");
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         image.setId(generatedKeys.getInt(1));
                     }
                 }
+//                log.createLog("CREATE", "create image " + image.getId() + " successfully");
             } else {
-                log.createLog("CREATE", "create image " + image + " failed");
+//                log.createLog("CREATE", "create image failed");
                 return -1;
             }
             return image.getId();
         } catch (SQLException ex) {
-            log.createLog("CREATE", "create image " + image + " failed");
+//            log.createLog("CREATE", "create image failed");
             ex.printStackTrace();
             return -1;
         } finally {
@@ -59,9 +59,9 @@ public class ImageGateway {
                 ps.setInt(1, imageID);
                 int i = ps.executeUpdate();
                 if (i == 1) {
-                    log.createLog("DELETE", "delete image with id " + imageID + " success");
+//                    log.createLog("DELETE", "delete image with id " + imageID + " successfully");
                 } else {
-                    log.createLog("DELETE", "delete image with id " + imageID + " success, invalid ID");
+//                    log.createLog("DELETE", "delete image with id " + imageID + " successfully, invalid ID");
                 }
                 // Set Album image_id to null
                 String query_set_image_id_null = "UPDATE albums set image_id = NULL where image_id = ?";
@@ -72,7 +72,7 @@ public class ImageGateway {
             }
             return false;
         } catch (SQLException ex) {
-            log.createLog("DELETE", "delete image with id " + imageID + " failed");
+//            log.createLog("DELETE", "delete image with id " + imageID + " failed");
             ex.printStackTrace();
             return false;
         } finally {

@@ -9,15 +9,17 @@ public class Logs {
     private String log_type;
     private long log_date;
     private String log_content;
+    private String log_isrc;
 
     public Logs() {
     }
 
-    public Logs(int log_id, String log_type, long log_date, String log_content) {
+    public Logs(int log_id, String log_type, long log_date, String log_content, String log_isrc) {
         this.log_id = log_id;
         this.log_type = log_type;
         this.log_date = log_date;
         this.log_content = log_content;
+        this.log_isrc = log_isrc;
     }
 
     public int getLog_id() {
@@ -52,11 +54,11 @@ public class Logs {
         this.log_content = log_content;
     }
 
-    @Override
-    public String toString() {
-        return  "[" + log_type +
-                "] log_id:" + log_id +
-                ", log_date:" + log_date +
-                ", log_content:'" + log_content + '\n';
+    public String getLog_isrc() {
+        return log_isrc;
+    }
+
+    public void setLog_isrc(String log_isrc) {
+        this.log_isrc = log_isrc;
     }
 }
