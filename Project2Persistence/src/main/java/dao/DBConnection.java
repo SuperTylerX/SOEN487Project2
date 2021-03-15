@@ -11,7 +11,7 @@ public class DBConnection {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            conn = DriverManager.getConnection("jdbc:sqlite:../Project2Persistence/src/main/resources/db.sqlite");
+            conn = DriverManager.getConnection("jdbc:sqlite:Project2Persistence/src/main/resources/db.sqlite");
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);

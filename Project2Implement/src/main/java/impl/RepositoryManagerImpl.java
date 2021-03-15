@@ -69,7 +69,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
 
     @Override
     public void clearLogs() throws RepException {
-        throw new RepException();
+        throw new RepException("This function is not implemented.");
     }
 
 }

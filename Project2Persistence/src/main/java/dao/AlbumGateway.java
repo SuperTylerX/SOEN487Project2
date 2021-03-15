@@ -154,7 +154,7 @@ public class AlbumGateway {
         Connection connection = DBConnection.getConnection();
         try {
             Statement stmt = connection.createStatement();
-            String query = "select * from albums;";
+            String query = "select * from albums order by album_title;";
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -200,7 +200,8 @@ public class AlbumGateway {
                 "AND album_year LIKE ?" +
                 "AND album_artist LIKE ?" +
                 "AND album_title LIKE ?" +
-                "AND album_id LIKE ?";
+                "AND album_id LIKE ?" +
+                "ORDER BY album_title";
 
         Connection connection = DBConnection.getConnection();
         try {

@@ -29,14 +29,11 @@ public class ImageGateway {
                         image.setId(generatedKeys.getInt(1));
                     }
                 }
-//                log.createLog("CREATE", "create image " + image.getId() + " successfully");
             } else {
-//                log.createLog("CREATE", "create image failed");
                 return -1;
             }
             return image.getId();
         } catch (SQLException ex) {
-//            log.createLog("CREATE", "create image failed");
             ex.printStackTrace();
             return -1;
         } finally {

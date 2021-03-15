@@ -37,7 +37,7 @@ public class LogGateway {
         try {
             Statement stmt = connection.createStatement();
             String queryWithoutDateRange = "select * from logs where log_type LIKE ? ;";
-            String queryWithDateRange = "select * from logs where log_type LIKE ? AND log_date between ? And ?";
+            String queryWithDateRange = "select * from logs where log_type LIKE ? AND log_date between ? And ? order by log_date";
             String query;
             if (type == null || type.isEmpty()) {
                 type = "%";
