@@ -4,7 +4,7 @@ This project consists of the following components, to be implemented in separate
 
 1. **The Repository Core**
 
-   A java class library containing common interfaces / data structures that later on may be shared between the client, and the service (The Interface)
+   A java class library containing common interfaces / data structures
 
 2. **The Repository Implementation**
 
@@ -12,12 +12,13 @@ This project consists of the following components, to be implemented in separate
 
 3. **The Albums Persistence Layer**
 
-   to handle data persistence in a database (or file system).
+   to handle data persistence in a database.
 
 4. **The Repository Service**
 
-   A java web application providing the web service (The Service)
+   A java web application providing the web service(JSON Restful service for albums and SOAP
+   service for change logs)
 
 5.  **The Albums Client App**
-    
-   See in [Client App GitHub](https://github.com/SuperTylerX/SOEN487Project2Client)
+   
+      See [Project2 Client GitHub](https://github.com/SuperTylerX/SOEN487Project2Client)
